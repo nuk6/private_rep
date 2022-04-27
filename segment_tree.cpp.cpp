@@ -20,11 +20,22 @@ void build(int l, int r, int i) {
 
 int query(int x, int y, int l, int r, int i) {
 	if(x <= l && y >= r) return seg_tree[i];
-	if( (x <= r || y >= l ) && ( l != r )){
+	if((x <= r || y >= l) && (l != r)){
 		int m = (l + r)/2;
 		return min(query(x, y, l, m, 2*i+1), query(x, y, m+1, r, 2*i+2));
 	}
 	return INT_MAX;
+}
+
+void point_update(int u, int v, int l, int r, int i) {
+	if(l == r && l == u) {
+		seg_tree[i] = v;
+		return;
+	}
+	int m = (l+r)/2;
+	if(u >= l && u <= m) point_update(u, v, l, m, 2*i+1);
+	if(u > m && u <= r) point_update(u, v, m+1, r, 2*i+2);
+	seg_tree[i] = min(seg_tree[2*i+1], seg_tree[2*i+2]);
 }
 
 int main()
@@ -33,6 +44,8 @@ int main()
 	//cout << "size = " << n << endl;
 	build(0,n-1,0);
 	// querying 0 based
+	cout << query(1,3, 0, n-1, 0) << endl;
+	point_update(3, -88, 0, n-1, 0);
 	cout << query(1,3, 0, n-1, 0) << endl;
 	return 0;
 };
